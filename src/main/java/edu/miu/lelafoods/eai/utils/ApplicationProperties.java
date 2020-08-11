@@ -1,4 +1,4 @@
-package edu.miu.lelafoods.order.utils;
+package edu.miu.lelafoods.eai.utils;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

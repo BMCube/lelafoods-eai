@@ -1,4 +1,4 @@
-package edu.miu.lelafoods.order.aspect;
+package edu.miu.lelafoods.eai.aspect;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
@@ -20,6 +20,6 @@ public class EaiAspect {
     public void before(JoinPoint joinPoint){
         //Advice
         logger.info(" Check for Received joint execution ");
-        logger.info(" Allowed execution for {}", joinPoint);
+        logger.info(" Allowed execution for {}", joinPoint.getSignature().getDeclaringTypeName());
     }
 }

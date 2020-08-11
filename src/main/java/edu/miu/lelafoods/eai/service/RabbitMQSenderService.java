@@ -1,6 +1,6 @@
-package edu.miu.lelafoods.order.service;
+package edu.miu.lelafoods.eai.service;
 
-import edu.miu.lelafoods.order.domain.Order;
+import edu.miu.lelafoods.eai.domain.Order;
 
 public interface RabbitMQSenderService {
 	public void sendOrder(Order order);

@@ -1,4 +1,4 @@
-package edu.miu.lelafoods.order.domain;
+package edu.miu.lelafoods.eai.domain;
 
 public class Order {
 

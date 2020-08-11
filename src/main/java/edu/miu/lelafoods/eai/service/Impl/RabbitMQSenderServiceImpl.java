@@ -1,9 +1,8 @@
-package edu.miu.lelafoods.order.service.Impl;
+package edu.miu.lelafoods.eai.service.Impl;
 
-import edu.miu.lelafoods.order.domain.Order;
-import edu.miu.lelafoods.order.service.RabbitMQSenderService;
-import edu.miu.lelafoods.order.utils.ApplicationProperties;
-import org.springframework.amqp.core.AmqpAdmin;
+import edu.miu.lelafoods.eai.domain.Order;
+import edu.miu.lelafoods.eai.service.RabbitMQSenderService;
+import edu.miu.lelafoods.eai.utils.ApplicationProperties;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.Queue;
