@@ -2,27 +2,28 @@ package edu.miu.lelafoods.eai.domain;
 
 public class Order {
     private Food food;
-    public Food getFood() {
-        return food;
-    }
-    private int orderAmount;
+    private int orderQuantity;
 
-    public int getOrderAmount() {
-        return orderAmount;
+    public int getOrderQuantity() {
+        return orderQuantity;
     }
 
-    public void setOrderAmount(int orderAmount) {
-        this.orderAmount = orderAmount;
+    public void setOrderQuantity(int orderQuantity) {
+        this.orderQuantity = orderQuantity;
     }
 
     public void setFood(Food food) {
         this.food = food;
     }
+    public Food getFood() {
+        return food;
+    }
 
     @Override
     public String toString() {
         return "Order{" +
-                " food=" + food +
+                "food=" + food +
+                ", orderQuantity=" + orderQuantity +
                 '}';
     }
 }

@@ -1,14 +1,18 @@
 package edu.miu.lelafoods.eai.service.Impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.miu.lelafoods.eai.domain.Cart;
 import edu.miu.lelafoods.eai.domain.Order;
 import edu.miu.lelafoods.eai.service.RabbitMQReceiverService;
+import edu.miu.lelafoods.eai.service.RabbitMQSenderService;
 import edu.miu.lelafoods.eai.utils.ApplicationProperties;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 @Service
@@ -19,19 +23,48 @@ public class RabbitMQReceiverServiceImpl implements RabbitMQReceiverService {
     @Autowired
     Queue queue;
 
+//    @Autowired
+//    RabbitMQSenderService rabbitMQSenderService;
+
     @Override
     @RabbitListener(queues = "#{queue.getName()}")
     public void receiverCart(Cart cart) {
-        List<Order> orderList=cart.getOrder();
-        double totalPerOrder=0;
-        for (Order order: orderList) {
-            //This part should contain same name with the cart model
-            order.getFood().setTotal(order.getFood().getPrice()*order.getOrderAmount());
+        try {
+                List<Order> orderList = cart.getOrder();
+                //  Cart cartToBeSent = new Cart();
+                double totalPrice;
+                for (Order order : orderList) {
+                    //This part should contain same name with the cart model
+                    totalPrice = order.getFood().getPrice() * order.getOrderQuantity();
+                    BigDecimal bd = new BigDecimal(totalPrice).setScale(2, RoundingMode.HALF_UP);
+                    double newTotalPrice = bd.doubleValue();
+                    order.getFood().setTotal(newTotalPrice);
+                }
+                //New cart object creation from the received message
+
+                //  cartToBeSent.setOrder(orderList);
+                String cartJson = cartToJson(cart);
+                System.out.println("Recieved Message From RabbitMQ: " + cart.toString());
+                //    rabbitMQSenderService.sendCartToRestaurant(cartJson);
+                //    rabbitMQSenderService.sendCartEmail(cartJson);
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
-        cart.setOrder(orderList);
 
+    }
 
-        System.out.println("Recieved Message From RabbitMQ: " + cart.toString());
+    @Override
+    public String cartToJson(Cart cart) {
+        ObjectMapper mapper = new ObjectMapper();
+        String cartJson = "";
+        try {
+            cartJson = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(cart);
+            System.out.println("Json to be sent: " + cartJson);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return cartJson;
     }
 
 

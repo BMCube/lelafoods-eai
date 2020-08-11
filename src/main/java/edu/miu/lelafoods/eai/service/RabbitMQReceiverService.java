@@ -4,4 +4,5 @@ import edu.miu.lelafoods.eai.domain.Cart;
 
 public interface RabbitMQReceiverService {
 	public void receiverCart(Cart cart);
+	public String cartToJson( Cart cart);
 }
