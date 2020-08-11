@@ -16,7 +16,7 @@ public class EaiAspect {
     //What kind of method calls I would intercept
     //execution(* PACKAGE.*.*(..))
     //Weaving & Weaver
-    @After("execution(* edu.miu.lelafoods.order.service.*.*(..))")
+    @After("execution(* edu.miu.lelafoods.eai.service.*.*(..))")
     public void before(JoinPoint joinPoint){
         //Advice
         logger.info(" Check for Received joint execution ");

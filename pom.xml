@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>edu.miu.lelafoods</groupId>
-    <artifactId>order</artifactId>
+    <artifactId>eai</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>order</name>
-    <description>Lelafoods Order</description>
+    <name>eai</name>
+    <description>Lelafoods Eai</description>
 
     <properties>
         <java.version>11</java.version>

@@ -1,14 +1,28 @@
 package edu.miu.lelafoods.eai.domain;
 
 public class Order {
+    private Food food;
+    public Food getFood() {
+        return food;
+    }
+    private int orderAmount;
 
-    private Long id;
-
-    public Long getId() {
-        return id;
+    public int getOrderAmount() {
+        return orderAmount;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setOrderAmount(int orderAmount) {
+        this.orderAmount = orderAmount;
+    }
+
+    public void setFood(Food food) {
+        this.food = food;
+    }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                " food=" + food +
+                '}';
     }
 }
