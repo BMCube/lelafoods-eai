@@ -1,4 +1,4 @@
-package edu.miu.lelafoods.order;
+package edu.miu.lelafoods.eai;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
