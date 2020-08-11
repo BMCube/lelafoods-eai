@@ -18,7 +18,6 @@ public class RabbitMQConfig {
     @Autowired
     ApplicationProperties applicationProperties;
 
-
     @Bean
     Queue queue() {
         return new Queue(applicationProperties.getQueueName(), true);
