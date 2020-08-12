@@ -6,14 +6,13 @@ public class Cart {
 
     List<Order> orderList;
 
-    public List<Order> getOrder() {
+    public List<Order> getOrderList() {
         return orderList;
     }
 
-    public void setOrder(List<Order> order) {
-        this.orderList = order;
+    public void setOrderList(List<Order> orderList) {
+        this.orderList = orderList;
     }
-
 
     @Override
     public String toString() {
