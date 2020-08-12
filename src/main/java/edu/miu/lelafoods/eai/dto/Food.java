@@ -1,4 +1,4 @@
-package edu.miu.lelafoods.eai.domain;
+package edu.miu.lelafoods.eai.dto;
 
 import java.text.DecimalFormat;
 

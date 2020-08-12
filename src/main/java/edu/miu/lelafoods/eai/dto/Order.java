@@ -1,4 +1,4 @@
-package edu.miu.lelafoods.eai.domain;
+package edu.miu.lelafoods.eai.dto;
 
 public class Order {
     private Food food;

@@ -1,10 +1,10 @@
 package edu.miu.lelafoods.eai.service.Impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.miu.lelafoods.eai.domain.Cart;
-import edu.miu.lelafoods.eai.domain.Order;
+import edu.miu.lelafoods.eai.dto.CartDto;
+import edu.miu.lelafoods.eai.dto.Order;
 import edu.miu.lelafoods.eai.service.RabbitMQReceiverService;
 import edu.miu.lelafoods.eai.service.RabbitMQSenderService;
+import edu.miu.lelafoods.eai.utils.Utility;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,11 +23,13 @@ public class RabbitMQReceiverServiceImpl implements RabbitMQReceiverService {
     @Autowired
     RabbitMQSenderService rabbitMQSenderService;
 
+    private Utility utility = new Utility();
+
     @Override
     @RabbitListener(queues = "lelafoods-order.queue")
-    public void receiverCart(Cart cart) {
+    public void receiverCart(CartDto cart) {
         try {
-            List<Order> orderList = cart.getOrderList();
+            List<Order> orderList = cart.getOrder();
             //  Cart cartToBeSent = new Cart();
             double totalPrice;
             for (Order order : orderList) {
@@ -37,30 +39,18 @@ public class RabbitMQReceiverServiceImpl implements RabbitMQReceiverService {
                 double newTotalPrice = bd.doubleValue();
                 order.getFood().setTotal(newTotalPrice);
             }
-            //New cart object creation from the received message
-            //  cartToBeSent.setOrderList(orderList);
-            String cartJson = cartToJson(cart);
+
             System.out.println("Recieved Message From RabbitMQ: " + cart.toString());
             rabbitMQSenderService.sendCartToRestaurant(cart);
-            //    rabbitMQSenderService.sendCartEmail(cartJson);
+            emailJsonFormat(cart);
+            rabbitMQSenderService.sendCartEmail(cart);
 
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
 
-    @Override
-    public String cartToJson(Cart cart) {
-        ObjectMapper mapper = new ObjectMapper();
-        String cartJson = "";
-        try {
-            cartJson = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(cart);
-            System.out.println("Json to be sent: " + cartJson);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return cartJson;
+    public void emailJsonFormat(CartDto cartDto) {
+
     }
-
-
 }
