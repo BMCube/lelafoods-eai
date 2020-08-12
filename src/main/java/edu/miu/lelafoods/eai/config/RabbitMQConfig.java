@@ -20,6 +20,12 @@ public class RabbitMQConfig {
     Queue queue() {
         return new Queue(applicationProperties.getQueueName(), true);
     }
+
+    @Bean
+    Queue queueEai() {
+        return new Queue(applicationProperties.getEaiQueueName(), true);
+    }
+
     @Bean
     public RabbitAdmin rabbitAdmin(ConnectionFactory connectionFactory) {
         return new RabbitAdmin(connectionFactory);
@@ -31,8 +37,13 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    Binding binding(Queue queue, DirectExchange exchange) {
-        return BindingBuilder.bind(queue).to(exchange).with(applicationProperties.getRoutingkey());
+    Binding binding(DirectExchange exchange) {
+        return BindingBuilder.bind(queue()).to(exchange).with(applicationProperties.getRoutingkey());
+    }
+
+    @Bean
+    Binding bindingEai(DirectExchange exchange) {
+        return BindingBuilder.bind(queueEai()).to(exchange).with(applicationProperties.getEaiRoutingkey());
     }
 
     @Bean

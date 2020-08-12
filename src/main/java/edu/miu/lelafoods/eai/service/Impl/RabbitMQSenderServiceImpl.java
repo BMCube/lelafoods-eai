@@ -1,5 +1,6 @@
 package edu.miu.lelafoods.eai.service.Impl;
 
+import edu.miu.lelafoods.eai.domain.Cart;
 import edu.miu.lelafoods.eai.domain.Order;
 import edu.miu.lelafoods.eai.service.RabbitMQSenderService;
 import edu.miu.lelafoods.eai.utils.ApplicationProperties;
@@ -16,24 +17,15 @@ public class RabbitMQSenderServiceImpl implements RabbitMQSenderService {
     private AmqpTemplate amqpTemplate;
     @Autowired
     private ApplicationProperties applicationProperties;
-    @Autowired
-    private RabbitAdmin rabbitAdmin;
 
-    //For now not used
-    String amqpTopic = "lelafoods_order_topic";
-    //I don't think we need this but for now let's keep it
     @Override
-    public void initializeRabbit(){
-        Queue queue = new Queue(applicationProperties.getQueueName() , true, false, false);
-        Binding binding = new Binding(applicationProperties.getQueueName() , Binding.DestinationType.QUEUE, applicationProperties.getExchange(), applicationProperties.getRoutingkey(), null);
-        rabbitAdmin.declareQueue(queue);
-        rabbitAdmin.declareBinding(binding);
+    public void sendCartToRestaurant(Cart cart) {
+        amqpTemplate.convertAndSend(applicationProperties.getExchange(), applicationProperties.getEaiRoutingkey(), cart);
+        System.out.println("sendCartToRestaurant = " + cart);
     }
 
-
     @Override
-    public void sendOrder(Order order) {
-        amqpTemplate.convertAndSend(applicationProperties.getExchange(), applicationProperties.getRoutingkey(), order);
-        System.out.println("Send order = " + order);
+    public void sendCartEmail(String cart) {
+        System.out.println("sendCartEmail = " + cart);
     }
 }
