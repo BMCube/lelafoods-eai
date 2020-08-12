@@ -22,16 +22,19 @@ public class RabbitMQReceiverServiceImpl implements RabbitMQReceiverService {
     @Override
     @RabbitListener(queues = "#{queue.getName()}")
     public void receiverCart(Cart cart) {
-        List<Order> orderList=cart.getOrder();
-        double totalPerOrder=0;
-        for (Order order: orderList) {
-            //This part should contain same name with the cart model
-            order.getFood().setTotal(order.getFood().getPrice()*order.getOrderAmount());
+        try {
+            List<Order> orderList = cart.getOrderList();
+            double totalPerOrder = 0;
+            for (Order order : orderList) {
+                //This part should contain same name with the cart model
+                order.getFood().setTotal(order.getFood().getPrice() * order.getOrderAmount());
+            }
+            cart.setOrderList(orderList);
+            System.out.println("Recieved Message From RabbitMQ: " + cart.toString());
+        }catch (Exception e){
+            System.out.println("Exception RabbitMQ: " + e.getStackTrace());
+            System.out.println("Exception RabbitMQ: " + e.getMessage());
         }
-        cart.setOrder(orderList);
-
-
-        System.out.println("Recieved Message From RabbitMQ: " + cart.toString());
     }
 
 
