@@ -17,29 +17,15 @@ public class RabbitMQSenderServiceImpl implements RabbitMQSenderService {
     private AmqpTemplate amqpTemplate;
     @Autowired
     private ApplicationProperties applicationProperties;
-    @Autowired
-    private RabbitAdmin rabbitAdmin;
-
-//    //For now not used
-//    String amqpTopic = "lelafoods_order_topic";
-//    //I don't think we need this but for now let's keep it
-//    @Override
-//    public void initializeRabbit(){
-//        Queue queue = new Queue(applicationProperties.getEaiQueueName() , true, false, false);
-//        Binding binding = new Binding(applicationProperties.getEaiQueueName(), Binding.DestinationType.QUEUE, applicationProperties.getEaiExchange(), applicationProperties.getEaiRoutingkey(), null);
-//        rabbitAdmin.declareQueue(queue);
-//        rabbitAdmin.declareBinding(binding);
-//    }
 
     @Override
-    public void sendCartToRestaurant(String cart) {
+    public void sendCartToRestaurant(Cart cart) {
         amqpTemplate.convertAndSend(applicationProperties.getExchange(), applicationProperties.getEaiRoutingkey(), cart);
         System.out.println("sendCartToRestaurant = " + cart);
     }
 
     @Override
     public void sendCartEmail(String cart) {
-        amqpTemplate.convertAndSend(applicationProperties.getExchange(), applicationProperties.getEaiRoutingkey(), cart);
-        System.out.println("sendCartEmail = " + cart.toString());
+        System.out.println("sendCartEmail = " + cart);
     }
 }

@@ -21,10 +21,10 @@ public class RabbitMQConfig {
         return new Queue(applicationProperties.getQueueName(), true);
     }
 
-//    @Bean
-//    Queue queueEai() {
-//        return new Queue(applicationProperties.getEaiQueueName(), true);
-//    }
+    @Bean
+    Queue queueEai() {
+        return new Queue(applicationProperties.getEaiQueueName(), true);
+    }
 
     @Bean
     public RabbitAdmin rabbitAdmin(ConnectionFactory connectionFactory) {
@@ -36,20 +36,15 @@ public class RabbitMQConfig {
         return new DirectExchange(applicationProperties.getExchange());
     }
 
-//    @Bean
-//    DirectExchange exchangeEai() {
-//        return new DirectExchange(applicationProperties.getEaiExchange());
-//    }
-
     @Bean
     Binding binding(DirectExchange exchange) {
         return BindingBuilder.bind(queue()).to(exchange).with(applicationProperties.getRoutingkey());
     }
 
-//    @Bean
-//    Binding bindingEai(DirectExchange exchange) {
-//        return BindingBuilder.bind(queueEai()).to(exchange).with(applicationProperties.getEaiRoutingkey());
-//    }
+    @Bean
+    Binding bindingEai(DirectExchange exchange) {
+        return BindingBuilder.bind(queueEai()).to(exchange).with(applicationProperties.getEaiRoutingkey());
+    }
 
     @Bean
     public MessageConverter jsonMessageConverter() {
@@ -62,13 +57,4 @@ public class RabbitMQConfig {
         return rabbitTemplate;
     }
 
-//    @Bean
-//    Binding binding1(TopicExchange exchange) {
-//        return BindingBuilder.bind(queue1()).to(exchange).with(queue1().getName());
-//    }
-//
-//    @Bean
-//    Binding binding2(TopicExchange exchange) {
-//        return BindingBuilder.bind(queue2()).to(exchange).with(queue2().getName());
-//    }
 }

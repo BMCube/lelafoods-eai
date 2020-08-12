@@ -5,7 +5,6 @@ import edu.miu.lelafoods.eai.domain.Cart;
 import edu.miu.lelafoods.eai.domain.Order;
 import edu.miu.lelafoods.eai.service.RabbitMQReceiverService;
 import edu.miu.lelafoods.eai.service.RabbitMQSenderService;
-import edu.miu.lelafoods.eai.utils.ApplicationProperties;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,39 +18,35 @@ import java.util.List;
 public class RabbitMQReceiverServiceImpl implements RabbitMQReceiverService {
 
     @Autowired
-    private ApplicationProperties applicationProperties;
-    @Autowired
     Queue queue;
 
-//    @Autowired
-//    RabbitMQSenderService rabbitMQSenderService;
+    @Autowired
+    RabbitMQSenderService rabbitMQSenderService;
 
     @Override
-    @RabbitListener(queues = "#{queue.getName()}")
+    @RabbitListener(queues = "lelafoods-order.queue")
     public void receiverCart(Cart cart) {
         try {
-                List<Order> orderList = cart.getOrder();
-                //  Cart cartToBeSent = new Cart();
-                double totalPrice;
-                for (Order order : orderList) {
-                    //This part should contain same name with the cart model
-                    totalPrice = order.getFood().getPrice() * order.getOrderQuantity();
-                    BigDecimal bd = new BigDecimal(totalPrice).setScale(2, RoundingMode.HALF_UP);
-                    double newTotalPrice = bd.doubleValue();
-                    order.getFood().setTotal(newTotalPrice);
-                }
-                //New cart object creation from the received message
-
-                //  cartToBeSent.setOrder(orderList);
-                String cartJson = cartToJson(cart);
-                System.out.println("Recieved Message From RabbitMQ: " + cart.toString());
-                //    rabbitMQSenderService.sendCartToRestaurant(cartJson);
-                //    rabbitMQSenderService.sendCartEmail(cartJson);
+            List<Order> orderList = cart.getOrderList();
+            //  Cart cartToBeSent = new Cart();
+            double totalPrice;
+            for (Order order : orderList) {
+                //This part should contain same name with the cart model
+                totalPrice = order.getFood().getPrice() * order.getOrderQuantity();
+                BigDecimal bd = new BigDecimal(totalPrice).setScale(2, RoundingMode.HALF_UP);
+                double newTotalPrice = bd.doubleValue();
+                order.getFood().setTotal(newTotalPrice);
+            }
+            //New cart object creation from the received message
+            //  cartToBeSent.setOrderList(orderList);
+            String cartJson = cartToJson(cart);
+            System.out.println("Recieved Message From RabbitMQ: " + cart.toString());
+            rabbitMQSenderService.sendCartToRestaurant(cart);
+            //    rabbitMQSenderService.sendCartEmail(cartJson);
 
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-
     }
 
     @Override
