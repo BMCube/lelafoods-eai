@@ -21,9 +21,9 @@ public class RabbitMQSenderServiceImpl implements RabbitMQSenderService {
     RestTemplate restTemplate = new RestTemplate();
 
     @Override
-    public void sendCartToRestaurant(CartDto cart) {
-        amqpTemplate.convertAndSend(applicationProperties.getExchange(), applicationProperties.getEaiRoutingkey(), cart);
-        System.out.println("sendCartToRestaurant = " + cart);
+    public void sendCartToRestaurant(CartDto cartDto) {
+        amqpTemplate.convertAndSend(applicationProperties.getExchange(), applicationProperties.getEaiRoutingkey(), cartDto);
+        System.out.println("sendCartToRestaurant = " + cartDto);
     }
 
     @Override
@@ -31,7 +31,7 @@ public class RabbitMQSenderServiceImpl implements RabbitMQSenderService {
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
         HttpEntity<?> entity = new HttpEntity<>(cartDto, headers);
-        ResponseEntity<Object> response = restTemplate.exchange(applicationProperties.getEmailUrl(), HttpMethod.POST, entity, Object.class);
+        ResponseEntity<String> response = restTemplate.exchange(applicationProperties.getEmailUrl(), HttpMethod.POST, entity, String.class);
         if (response.getStatusCode().is2xxSuccessful()) {
             System.out.println("Email sent successfully:  " + response.getBody());
         } else {
