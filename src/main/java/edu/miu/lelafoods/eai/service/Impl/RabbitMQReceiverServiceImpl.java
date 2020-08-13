@@ -29,23 +29,9 @@ public class RabbitMQReceiverServiceImpl implements RabbitMQReceiverService {
     @RabbitListener(queues = "lelafoods-order.queue")
     public void receiverCart(CartDto cartDto) {
         try {
-            List<Order> orderList = cartDto.getOrder();
-            //  Cart cartToBeSent = new Cart();
-//            double totalPrice;
-//            for (Order order : orderList) {
-//                //This part should contain same name with the cart model
-//                totalPrice = order.getFood().getPrice() * order.getOrderQuantity();
-//                BigDecimal bd = new BigDecimal(totalPrice).setScale(2, RoundingMode.HALF_UP);
-//                double newTotalPrice = bd.doubleValue();
-//                order.getFood().setTotal(newTotalPrice);
-//            }
-
             System.out.println("Recieved Message From RabbitMQ: " + cartDto.toString());
             System.out.println("utility.cartToJson(cart) From RabbitMQ: " + utility.cartToJson(cartDto));
-
-
             rabbitMQSenderService.sendCartToRestaurant(cartDto);
-            emailJsonFormat(cartDto);
             rabbitMQSenderService.sendCartEmail(cartDto);
 
         } catch (Exception e) {
@@ -53,7 +39,4 @@ public class RabbitMQReceiverServiceImpl implements RabbitMQReceiverService {
         }
     }
 
-    public void emailJsonFormat(CartDto cartDto) {
-
-    }
 }

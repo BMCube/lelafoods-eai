@@ -22,23 +22,10 @@ public class EaiAspect {
     @Autowired
     private ApplicationProperties applicationProperties;
 
-    //What kind of method calls I would intercept
-    //execution(* PACKAGE.*.*(..))
-    //Weaving & Weaver
     @After("execution(* edu.miu.lelafoods.eai.service.*.*(..))")
     public void before(JoinPoint joinPoint){
-        //Advice
+        //Advice for
         logger.info(" Check for Received joint execution ");
         logger.info(" Allowed execution for {}", joinPoint.getSignature().getDeclaringTypeName());
-    }
-
-    public void sendCartToRestaurant(CartDto cart) {
-        amqpTemplate.convertAndSend(applicationProperties.getExchange(), applicationProperties.getRoutingkey(), cart);
-        System.out.println("Sent card = " + cart.toString());
-    }
-
-    public void sendCartEmail(CartDto cart) {
-        amqpTemplate.convertAndSend(applicationProperties.getExchange(), applicationProperties.getRoutingkey(), cart);
-        System.out.println("Sent card = " + cart.toString());
     }
 }
