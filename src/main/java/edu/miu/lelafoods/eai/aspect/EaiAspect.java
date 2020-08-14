@@ -23,8 +23,8 @@ public class EaiAspect {
     private ApplicationProperties applicationProperties;
 
     @After("execution(* edu.miu.lelafoods.eai.service.*.*(..))")
-    public void before(JoinPoint joinPoint){
-        //Advice for
+    public void after(JoinPoint joinPoint){
+        //Implicit Advice logger to display after every message received from Queue listener
         logger.info(" Check for Received joint execution ");
         logger.info(" Allowed execution for {}", joinPoint.getSignature().getDeclaringTypeName());
     }
