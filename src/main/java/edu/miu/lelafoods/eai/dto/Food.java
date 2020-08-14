@@ -1,12 +1,12 @@
-package edu.miu.lelafoods.eai.domain;
+package edu.miu.lelafoods.eai.dto;
 
 public class Food {
-
     private String name;
 
     private Double price;
 
     private Double total;
+
 
     public String getName() {
         return name;
@@ -37,7 +37,7 @@ public class Food {
         return "Food{" +
                 "name='" + name + '\'' +
                 ", price=" + price +
-                ", total=" + total +
+
                 '}';
     }
 }

@@ -15,6 +15,15 @@ public class ApplicationProperties {
     @Value("${lelafoods-order.rabbitmq.routingkey}")
     private String routingkey;
 
+    @Value("${lelafoods-eai.rabbitmq.queue}")
+    private String eaiQueueName;
+
+    @Value("${lelafoods-eai.rabbitmq.routingkey}")
+    private String eaiRoutingkey;
+
+    @Value("${email.url}")
+    private String emailUrl;
+
     public String getRoutingkey() {
         return routingkey;
     }
@@ -27,4 +36,15 @@ public class ApplicationProperties {
         return queueName;
     }
 
+    public String getEaiQueueName() {
+        return eaiQueueName;
+    }
+
+    public String getEmailUrl() {
+        return emailUrl;
+    }
+
+    public String getEaiRoutingkey() {
+        return eaiRoutingkey;
+    }
 }

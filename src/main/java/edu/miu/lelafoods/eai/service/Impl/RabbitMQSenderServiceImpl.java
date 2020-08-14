@@ -1,14 +1,15 @@
 package edu.miu.lelafoods.eai.service.Impl;
 
-import edu.miu.lelafoods.eai.domain.Order;
+import edu.miu.lelafoods.eai.dto.CartDto;
 import edu.miu.lelafoods.eai.service.RabbitMQSenderService;
 import edu.miu.lelafoods.eai.utils.ApplicationProperties;
 import org.springframework.amqp.core.AmqpTemplate;
-import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.http.*;
+import org.springframework.web.client.RestTemplate;
+
+import java.util.Arrays;
 
 @Service
 public class RabbitMQSenderServiceImpl implements RabbitMQSenderService {
@@ -16,24 +17,26 @@ public class RabbitMQSenderServiceImpl implements RabbitMQSenderService {
     private AmqpTemplate amqpTemplate;
     @Autowired
     private ApplicationProperties applicationProperties;
-    @Autowired
-    private RabbitAdmin rabbitAdmin;
 
-    //For now not used
-    String amqpTopic = "lelafoods_order_topic";
-    //I don't think we need this but for now let's keep it
+    RestTemplate restTemplate = new RestTemplate();
+
     @Override
-    public void initializeRabbit(){
-        Queue queue = new Queue(applicationProperties.getQueueName() , true, false, false);
-        Binding binding = new Binding(applicationProperties.getQueueName() , Binding.DestinationType.QUEUE, applicationProperties.getExchange(), applicationProperties.getRoutingkey(), null);
-        rabbitAdmin.declareQueue(queue);
-        rabbitAdmin.declareBinding(binding);
+    public void sendCartToRestaurant(CartDto cartDto) {
+        amqpTemplate.convertAndSend(applicationProperties.getExchange(), applicationProperties.getEaiRoutingkey(), cartDto);
+        System.out.println("sendCartToRestaurant = " + cartDto);
     }
 
-
     @Override
-    public void sendOrder(Order order) {
-        amqpTemplate.convertAndSend(applicationProperties.getExchange(), applicationProperties.getRoutingkey(), order);
-        System.out.println("Send order = " + order);
+    public void sendCartEmail(CartDto cartDto) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+        HttpEntity<?> entity = new HttpEntity<>(cartDto, headers);
+        ResponseEntity<String> response = restTemplate.exchange(applicationProperties.getEmailUrl(), HttpMethod.POST, entity, String.class);
+        if (response.getStatusCode().is2xxSuccessful()) {
+            System.out.println("Email sent successfully:  " + response.getBody());
+        } else {
+            System.err.println("Email sent failed please try again");
+        }
+
     }
 }
