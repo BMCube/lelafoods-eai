@@ -1,15 +1,15 @@
 package edu.miu.lelafoods.eai.service.Impl;
 
-import edu.miu.lelafoods.eai.domain.Cart;
-import edu.miu.lelafoods.eai.domain.Order;
+import edu.miu.lelafoods.eai.dto.CartDto;
 import edu.miu.lelafoods.eai.service.RabbitMQSenderService;
 import edu.miu.lelafoods.eai.utils.ApplicationProperties;
 import org.springframework.amqp.core.AmqpTemplate;
-import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.http.*;
+import org.springframework.web.client.RestTemplate;
+
+import java.util.Arrays;
 
 @Service
 public class RabbitMQSenderServiceImpl implements RabbitMQSenderService {
@@ -18,14 +18,25 @@ public class RabbitMQSenderServiceImpl implements RabbitMQSenderService {
     @Autowired
     private ApplicationProperties applicationProperties;
 
+    RestTemplate restTemplate = new RestTemplate();
+
     @Override
-    public void sendCartToRestaurant(Cart cart) {
-        amqpTemplate.convertAndSend(applicationProperties.getExchange(), applicationProperties.getEaiRoutingkey(), cart);
-        System.out.println("sendCartToRestaurant = " + cart);
+    public void sendCartToRestaurant(CartDto cartDto) {
+        amqpTemplate.convertAndSend(applicationProperties.getExchange(), applicationProperties.getEaiRoutingkey(), cartDto);
+        System.out.println("sendCartToRestaurant = " + cartDto);
     }
 
     @Override
-    public void sendCartEmail(String cart) {
-        System.out.println("sendCartEmail = " + cart);
+    public void sendCartEmail(CartDto cartDto) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+        HttpEntity<?> entity = new HttpEntity<>(cartDto, headers);
+        ResponseEntity<String> response = restTemplate.exchange(applicationProperties.getEmailUrl(), HttpMethod.POST, entity, String.class);
+        if (response.getStatusCode().is2xxSuccessful()) {
+            System.out.println("Email sent successfully:  " + response.getBody());
+        } else {
+            System.err.println("Email sent failed please try again");
+        }
+
     }
 }

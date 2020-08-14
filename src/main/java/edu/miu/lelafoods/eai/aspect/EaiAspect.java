@@ -1,6 +1,6 @@
 package edu.miu.lelafoods.eai.aspect;
 
-import edu.miu.lelafoods.eai.domain.Cart;
+import edu.miu.lelafoods.eai.dto.CartDto;
 import edu.miu.lelafoods.eai.utils.ApplicationProperties;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
@@ -8,7 +8,6 @@ import org.aspectj.lang.annotation.Aspect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.AmqpTemplate;
-import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 
@@ -23,23 +22,10 @@ public class EaiAspect {
     @Autowired
     private ApplicationProperties applicationProperties;
 
-    //What kind of method calls I would intercept
-    //execution(* PACKAGE.*.*(..))
-    //Weaving & Weaver
     @After("execution(* edu.miu.lelafoods.eai.service.*.*(..))")
-    public void before(JoinPoint joinPoint){
-        //Advice
+    public void after(JoinPoint joinPoint){
+        //Implicit Advice logger to display after every message received from Queue listener
         logger.info(" Check for Received joint execution ");
         logger.info(" Allowed execution for {}", joinPoint.getSignature().getDeclaringTypeName());
-    }
-
-    public void sendCartToRestaurant(Cart cart) {
-        amqpTemplate.convertAndSend(applicationProperties.getExchange(), applicationProperties.getRoutingkey(), cart);
-        System.out.println("Sent card = " + cart.toString());
-    }
-
-    public void sendCartEmail(Cart cart) {
-        amqpTemplate.convertAndSend(applicationProperties.getExchange(), applicationProperties.getRoutingkey(), cart);
-        System.out.println("Sent card = " + cart.toString());
     }
 }

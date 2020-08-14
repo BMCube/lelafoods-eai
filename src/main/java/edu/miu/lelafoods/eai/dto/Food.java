@@ -1,16 +1,11 @@
-package edu.miu.lelafoods.eai.domain;
-
-import java.text.DecimalFormat;
+package edu.miu.lelafoods.eai.dto;
 
 public class Food {
-
     private String name;
 
     private Double price;
 
     private Double total;
-
-    private static DecimalFormat df2 = new DecimalFormat("#.##");
 
 
     public String getName() {
@@ -42,7 +37,7 @@ public class Food {
         return "Food{" +
                 "name='" + name + '\'' +
                 ", price=" + price +
-                ", total=" + df2.format(total) +
+
                 '}';
     }
 }
